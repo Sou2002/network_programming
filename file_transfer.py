@@ -32,19 +32,53 @@ class FileTransfer:
 
             if __file_size == __sent_size:
                 print("File sent successfully!")
-                print(f"File size = {format(__sent_size / (2 ** 20), '.2f')} MB")
+                print(f"File size = {
+                      format(__sent_size / (2 ** 20), '.2f')} MB")
 
         except socket.error as err:
             print(err)
 
+        # Closing file and socket
         __file.close()
         __sender_socket.close()
 
-    def receive(self) -> None:
+    def receive(self, IP_ADDRESS: str = "localhost") -> None:
         '''
         '''
-        pass
+        # Creating a receiver socket
+        # socket.AF_INET = Internet IPv4
+        # socket.SOCK_STREAM = TCP Connection
+        __receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        __receiver_socket.bind((IP_ADDRESS, self.__PORT))
+
+        # Listening to incoming request
+        __receiver_socket.listen()
+
+        # Accepting sender
+        __sender_socket, __sender_address = __receiver_socket.accept()
+
+        # Receiving data
+        __file_byte = b""
+
+        while True:
+            __data = __sender_socket.recv(1024)
+
+            if not __data:
+                break
+
+            __file_byte += __data
+
+        # Writing data in a file
+        __file = open('rec_img.png', 'wb')
+        __file.write(__file_byte)
+
+        # Closing file and socket
+        __file.close()
+        __sender_socket.close()
+        __receiver_socket.close()
 
 
 if __name__ == '__main__':
-    pass
+    PATH = 'img.png'
+    ft = FileTransfer()
+    ft.send(PATH)
