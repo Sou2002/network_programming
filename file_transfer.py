@@ -6,16 +6,44 @@ import tqdm
 # A class to transfer files
 class FileTransfer:
     '''
+    A class to transfer files between two devices using TCP connection.
+
+    Methods
+    -------
+    send(file_path, HOST="localhost"):
+        Sends the file from current device to HOST device.
+
+    receive(rec_file_path, IP_ADDRESS="localhost"):
+        Creates a receiving server at desired IP_ADDRESS and receives file from sender.
     '''
 
-    def __init__(self, port_number: int=8000) -> None:
+    def __init__(self, port_number: int = 8000) -> None:
         '''
+        Constructs all necessary attributes for FileTransfer object.
+
+        Parameters
+        ----------
+        port_number: int, optional
+            Selected port number to uniquely identify the service, default port 8000.
         '''
-        self.__PORT: int = port_number # Port Number
+        self.__PORT: int = port_number  # Port Number
 
     # A method to send file
-    def send(self, file_path: str, HOST: str="localhost") -> None:
+    def send(self, file_path: str, HOST: str = "localhost") -> None:
         '''
+        Sends the file from current device to HOST device.
+
+        Parameters
+        ----------
+        file_path: str
+            Path of the file that is to be sent.
+
+        HOST: str, optional
+            Receiver IP Address, default localhost.
+
+        Returns
+        -------
+            None
         '''
         # Creating a sender socket
         # socket.AF_INET = Internet IPv4
@@ -37,7 +65,8 @@ class FileTransfer:
 
             if __file_size == __sent_size:
                 print("File sent successfully!")
-                print(f"File size = {format(__sent_size / (2 ** 20), '.2f')} MB")
+                print(f"File size = {
+                      format(__sent_size / (2 ** 20), '.2f')} MB")
 
         except socket.error as err:
             print(err)
@@ -47,8 +76,21 @@ class FileTransfer:
         __sender_socket.close()
 
     # A method to receive file
-    def receive(self, rec_file_path: str, IP_ADDRESS: str="localhost") -> None:
+    def receive(self, rec_file_path: str, IP_ADDRESS: str = "localhost") -> None:
         '''
+        Creates a receiving server at desired IP_ADDRESS and receives file from sender.
+
+        Parameters
+        ----------
+        rec_file_path: str
+            Download path.
+
+        IP_ADDRESS: str, optional
+            Currnet device's IP Address, default localhost.
+
+        Returns
+        -------
+            None
         '''
         # Creating a receiver socket
         # socket.AF_INET = Internet IPv4
@@ -66,7 +108,8 @@ class FileTransfer:
         file_size: int = int(__sender_socket.recv(1024).decode())
 
         # Progress bar
-        progress_bar = tqdm.tqdm(unit="MB", unit_scale=True, unit_divisor=1024, total=file_size)
+        progress_bar = tqdm.tqdm(
+            unit="MB", unit_scale=True, unit_divisor=1024, total=file_size)
 
         # Receiving data
         __file_byte = b""
