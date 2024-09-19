@@ -32,8 +32,7 @@ class FileTransfer:
 
             if __file_size == __sent_size:
                 print("File sent successfully!")
-                print(f"File size = {
-                      format(__sent_size / (2 ** 20), '.2f')} MB")
+                print(f"File size = {format(__sent_size / (2 ** 20), '.2f')} MB")
 
         except socket.error as err:
             print(err)
@@ -42,7 +41,7 @@ class FileTransfer:
         __file.close()
         __sender_socket.close()
 
-    def receive(self, IP_ADDRESS: str = "localhost") -> None:
+    def receive(self, rec_file_path: str, IP_ADDRESS: str = "localhost") -> None:
         '''
         '''
         # Creating a receiver socket
@@ -69,7 +68,7 @@ class FileTransfer:
             __file_byte += __data
 
         # Writing data in a file
-        __file = open('rec_img.png', 'wb')
+        __file = open(rec_file_path, 'wb')
         __file.write(__file_byte)
 
         # Closing file and socket
