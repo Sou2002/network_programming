@@ -1,5 +1,6 @@
 import os
 import socket
+import tqdm
 
 
 # A class to transfer files
@@ -7,13 +8,13 @@ class FileTransfer:
     '''
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, port_number: int=8000) -> None:
         '''
         '''
-        self.__PORT: int = 8000  # Port Number
+        self.__PORT: int = port_number # Port Number
 
     # A method to send file
-    def send(self, file_path: str, HOST: str = "localhost") -> None:
+    def send(self, file_path: str, HOST: str="localhost") -> None:
         '''
         '''
         # Creating a sender socket
@@ -27,6 +28,10 @@ class FileTransfer:
         __file = open(file_path, 'rb')
         __file_size: int = os.path.getsize(file_path)
 
+        # Sending the file size for progress bar
+        __sender_socket.send(str(__file_size).encode())
+
+        # Sending the file
         try:
             __sent_size: int = __sender_socket.sendfile(__file)
 
@@ -41,7 +46,8 @@ class FileTransfer:
         __file.close()
         __sender_socket.close()
 
-    def receive(self, rec_file_path: str, IP_ADDRESS: str = "localhost") -> None:
+    # A method to receive file
+    def receive(self, rec_file_path: str, IP_ADDRESS: str="localhost") -> None:
         '''
         '''
         # Creating a receiver socket
@@ -56,6 +62,12 @@ class FileTransfer:
         # Accepting sender
         __sender_socket, __sender_address = __receiver_socket.accept()
 
+        # Receiving the file size for progress bar
+        file_size: int = int(__sender_socket.recv(1024).decode())
+
+        # Progress bar
+        progress_bar = tqdm.tqdm(unit="MB", unit_scale=True, unit_divisor=1024, total=file_size)
+
         # Receiving data
         __file_byte = b""
 
@@ -66,6 +78,8 @@ class FileTransfer:
                 break
 
             __file_byte += __data
+
+            progress_bar.update(1)
 
         # Writing data in a file
         __file = open(rec_file_path, 'wb')
@@ -78,6 +92,6 @@ class FileTransfer:
 
 
 if __name__ == '__main__':
-    PATH = 'img.png'
+    PATH = 'data/img.png'
     ft = FileTransfer()
     ft.send(PATH)
