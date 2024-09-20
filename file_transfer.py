@@ -109,24 +109,27 @@ class FileTransfer:
 
         # Progress bar
         progress_bar = tqdm.tqdm(
-            unit="MB", unit_scale=True, unit_divisor=1024, total=file_size)
+            unit="B", unit_scale=True, unit_divisor=1024, total=file_size)
 
         # Receiving data
         __file_byte = b""
 
         while True:
-            __data = __sender_socket.recv(1024)
+            __data = __sender_socket.recv(1024*1024)
 
             if not __data:
                 break
 
             __file_byte += __data
 
-            progress_bar.update(1)
+            progress_bar.update(1024*1024)
 
         # Writing data in a file
         __file = open(rec_file_path, 'wb')
         __file.write(__file_byte)
+
+        print()
+        print("File downloaded successfully!")
 
         # Closing file and socket
         __file.close()
@@ -135,6 +138,6 @@ class FileTransfer:
 
 
 if __name__ == '__main__':
-    PATH = 'data/img.png'
+    PATH = 'data/vid.mp4'
     ft = FileTransfer()
     ft.send(PATH)
