@@ -25,8 +25,25 @@ class ChatServer:
     def __broadcast(self, message: bytes) -> None:
         '''
         '''
-        for nickname, socket in self.__clients:
+        for socket in self.__clients:
             socket.send(message)
+
+    # A method to handle clients
+    def __manage_clients(self, client_socket) -> None:
+        '''
+        '''
+        while True:
+            try:
+                # Receiving message from user and broadcast to everyone
+                message = client_socket.recv(1024)
+                self.__broadcast(message=message)
+
+            except:
+                # Removing user from the chat
+                removed_user: str = self.__clients.pop(client_socket)
+                self.__broadcast(f"{removed_user} has left!".encode())
+                client_socket.close()
+                break
 
     # A method to receive message
     def __receive(self) -> None:
