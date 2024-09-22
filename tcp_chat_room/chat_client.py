@@ -6,6 +6,7 @@ import threading
 class ChatClient:
     '''
     '''
+
     def __init__(self, ip_address: str = "localhost", port_number: int = 8001) -> None:
         '''
         '''
@@ -36,7 +37,6 @@ class ChatClient:
                 self.__client.close()
                 break
 
-
     # A method to send message to server
     def __send(self) -> None:
         '''
@@ -45,11 +45,19 @@ class ChatClient:
             message: str = f"{self.__username}: {input()}"
             self.__client.send(message.encode())
 
+    # A method to start the client
     def start_client(self) -> None:
         '''
         '''
-        pass
+        # Starting receiving thread
+        receiving_thread = threading.Thread(target=self.__recieve())
+        receiving_thread.start()
+
+        # Starting receiving thread
+        sending_thread = threading.Thread(target=self.__send())
+        sending_thread.start()
 
 
 if __name__ == '__main__':
-    pass
+    cc = ChatClient()
+    cc.start_client()
