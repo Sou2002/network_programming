@@ -10,14 +10,11 @@ class ChatServer:
     def __init__(self, ip_address: str = "localhost", port_number: int = 8001) -> None:
         '''
         '''
-        self.IP_ADDRESS: str = ip_address  # Host IP Address
-        self.PORT: int = port_number  # Port Number
-
         # Creating the server socket
         # socket.AF_INET = Internet IPv4
         # socket.SOCK_STREAM = TCP Connection
         self.__server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.__server.bind((self.IP_ADDRESS, self.PORT))
+        self.__server.bind((ip_address, port_number))
 
         self.__clients: dict = []
 
@@ -52,13 +49,13 @@ class ChatServer:
         client_socket, client_address = self.__server.accept()
         print(f"{str(client_address)} connected!")
 
-        # Sending req to client to send nickname
-        client_socket.send("SEND NICKNAME".encode())
-        nickname: str = client_socket.recv(1024).decode()
+        # Sending req to client to send username
+        client_socket.send("SEND USERNAME".encode())
+        username: str = client_socket.recv(1024).decode()
 
         # Adding user in the clients dict
-        self.__clients[client_socket] = nickname
-        self.__broadcast(f"{nickname} joined the chat!".encode())
+        self.__clients[client_socket] = username
+        self.__broadcast(f"{username} joined the chat!".encode())
         client_socket.send("You joined chat!".encode())
 
         return client_socket
