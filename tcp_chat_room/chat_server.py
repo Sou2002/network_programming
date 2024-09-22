@@ -67,7 +67,11 @@ class ChatServer:
     def __receive(self) -> None:
         '''
         '''
-        pass
+        client_socket = self.__accept_client()
+
+        # Creating thread for handling multiple simultaneously
+        user_thread = threading.Thread(target=self.__manage_client(), args=(client_socket,))
+        user_thread.start()
 
     # A method to start the chat server
     def start_server(self) -> None:
