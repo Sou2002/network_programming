@@ -21,7 +21,21 @@ class ChatClient:
     def __recieve(self) -> None:
         '''
         '''
-        pass
+        while True:
+            try:
+                message: str = self.__client.recv(1024).decode()
+
+                # Check server is asking for username otherwise print the message
+                if message == "SEND USERNAME":
+                    self.__client.send(self.__username.encode())
+                else:
+                    print(message)
+
+            except:
+                print("An error occured!")
+                self.__client.close()
+                break
+
 
     # A method to send message to server
     def __send(self) -> None:
