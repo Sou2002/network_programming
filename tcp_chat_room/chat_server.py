@@ -77,8 +77,13 @@ class ChatServer:
     def start_server(self) -> None:
         '''
         '''
-        pass
+        # Starting server
+        self.__server.listen()
+        print("Server started.")
+        print("Waiting for user to join...")
+        self.__receive()
 
 
 if __name__ == '__main__':
-    pass
+    cs = ChatServer()
+    cs.start_server()
