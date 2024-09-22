@@ -41,7 +41,9 @@ class ChatClient:
     def __send(self) -> None:
         '''
         '''
-        pass
+        while True:
+            message: str = f"{self.__username}: {input()}"
+            self.__client.send(message.encode())
 
     def start_client(self) -> None:
         '''
