@@ -29,7 +29,7 @@ class ChatServer:
             socket.send(message)
 
     # A method to handle clients
-    def __manage_clients(self, client_socket) -> None:
+    def __manage_client(self, client_socket) -> None:
         '''
         '''
         while True:
@@ -44,6 +44,24 @@ class ChatServer:
                 self.__broadcast(f"{removed_user} has left!".encode())
                 client_socket.close()
                 break
+
+    # A method to accept clients
+    def __accept_client(self) -> socket:
+        '''
+        '''
+        client_socket, client_address = self.__server.accept()
+        print(f"{str(client_address)} connected!")
+
+        # Sending req to client to send nickname
+        client_socket.send("SEND NICKNAME".encode())
+        nickname: str = client_socket.recv(1024).decode()
+
+        # Adding user in the clients dict
+        self.__clients[client_socket] = nickname
+        self.__broadcast(f"{nickname} joined the chat!".encode())
+        client_socket.send("You joined chat!".encode())
+
+        return client_socket
 
     # A method to receive message
     def __receive(self) -> None:
