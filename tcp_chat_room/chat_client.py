@@ -42,6 +42,7 @@ class ChatClient:
         '''
         '''
         while True:
+            print ("\033[A                             \033[A")
             message: str = f"{self.__username}: {input()}"
             self.__client.send(message.encode())
 
@@ -50,11 +51,11 @@ class ChatClient:
         '''
         '''
         # Starting receiving thread
-        receiving_thread = threading.Thread(target=self.__recieve())
+        receiving_thread = threading.Thread(target=self.__recieve)
         receiving_thread.start()
 
         # Starting receiving thread
-        sending_thread = threading.Thread(target=self.__send())
+        sending_thread = threading.Thread(target=self.__send)
         sending_thread.start()
 
 

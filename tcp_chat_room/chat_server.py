@@ -16,7 +16,7 @@ class ChatServer:
         self.__server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__server.bind((ip_address, port_number))
 
-        self.__clients: dict = []
+        self.__clients: dict = {}
 
     # A method to brodcast message
     def __broadcast(self, message: bytes) -> None:
@@ -56,7 +56,6 @@ class ChatServer:
         # Adding user in the clients dict
         self.__clients[client_socket] = username
         self.__broadcast(f"{username} joined the chat!".encode())
-        client_socket.send("You joined chat!".encode())
 
         return client_socket
 
@@ -64,11 +63,12 @@ class ChatServer:
     def __receive(self) -> None:
         '''
         '''
-        client_socket = self.__accept_client()
+        while True:
+            client_socket = self.__accept_client()
 
-        # Creating thread for handling multiple simultaneously
-        user_thread = threading.Thread(target=self.__manage_client(), args=(client_socket,))
-        user_thread.start()
+            # Creating thread for handling multiple simultaneously
+            user_thread = threading.Thread(target=self.__manage_client, args=(client_socket,))
+            user_thread.start()
 
     # A method to start the chat server
     def start_server(self) -> None:
