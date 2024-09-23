@@ -5,10 +5,24 @@ import threading
 # Chat Server Class
 class ChatServer:
     '''
+    A class to host the chat server.
+
+    Methods
+    -------
+    start_server():
+        Run this method to start the server.
     '''
 
     def __init__(self, ip_address: str = "localhost", port_number: int = 8001) -> None:
         '''
+        Constructs all necessary attributes for the ChatServer object.
+
+        Parameters
+        ----------
+        ip_address: str, optional
+            Selected IP Address to host the chat service, default value "localhost".
+        port_number: int, optional
+            Selected port number to uniquely identify the service, default port 8001.
         '''
         # Creating the server socket
         # socket.AF_INET = Internet IPv4
@@ -21,6 +35,16 @@ class ChatServer:
     # A method to brodcast message
     def __broadcast(self, message: bytes) -> None:
         '''
+        Broadcasts the message among all users who are connected to the chat server.
+
+        Parameters
+        ----------
+        message: bytes
+            Encoded message in bytes format.
+
+        Returns
+        -------
+            None
         '''
         for socket in self.__clients:
             socket.send(message)
@@ -28,6 +52,16 @@ class ChatServer:
     # A method to handle clients
     def __manage_client(self, client_socket) -> None:
         '''
+        Receives message from user and broadcast the message to every user.
+
+        Parameters
+        ----------
+        client_socket: socket
+            Socket of client. 
+
+        Returns
+        -------
+            None
         '''
         while True:
             try:
@@ -45,6 +79,16 @@ class ChatServer:
     # A method to accept clients
     def __accept_client(self) -> socket:
         '''
+        Accepts client to join the server.
+
+        Parameters
+        ----------
+            None
+
+        Returns
+        -------
+        client_socket: socket
+            Socket of the accepted client.
         '''
         client_socket, client_address = self.__server.accept()
         print(f"{str(client_address)} connected!")
@@ -62,17 +106,36 @@ class ChatServer:
     # A method to receive message
     def __receive(self) -> None:
         '''
+        Creates receiving thread for accepted user.
+
+        Parameters
+        ----------
+            None
+
+        Returns
+        -------
+            None
         '''
         while True:
             client_socket = self.__accept_client()
 
             # Creating thread for handling multiple simultaneously
-            user_thread = threading.Thread(target=self.__manage_client, args=(client_socket,))
+            user_thread = threading.Thread(
+                target=self.__manage_client, args=(client_socket,))
             user_thread.start()
 
     # A method to start the chat server
     def start_server(self) -> None:
         '''
+        Run this method to start the server.
+
+        Parameters
+        ----------
+            None
+
+        Returns
+        -------
+            None
         '''
         # Starting server
         self.__server.listen()

@@ -19,7 +19,7 @@ class FileTransfer:
 
     def __init__(self, port_number: int = 8000) -> None:
         '''
-        Constructs all necessary attributes for FileTransfer object.
+        Constructs all necessary attributes for the FileTransfer object.
 
         Parameters
         ----------
